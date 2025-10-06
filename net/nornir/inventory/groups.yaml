@@ -1,0 +1,4 @@
+# Put shared data here
+core:
+  data:
+    site: lab

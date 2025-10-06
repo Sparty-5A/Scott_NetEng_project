@@ -1,0 +1,17 @@
+# Core
+nornir>=3.5,<4
+netmiko>=4.6,<5
+nornir-netmiko>=1.0.0
+loguru>=0.7,<0.8
+pyyaml>=6.0
+
+# Dev / quality
+pytest>=7.4
+ruff>=0.5
+black>=24.3
+pre-commit>=3.7
+
+# Optional (uncomment as needed)
+# pyats>=23.9
+# genie>=23.9
+# pybatfish>=2024.6

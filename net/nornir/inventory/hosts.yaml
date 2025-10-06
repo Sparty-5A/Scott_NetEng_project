@@ -1,0 +1,7 @@
+# Replace with your real devices
+example-router:
+  hostname: 192.0.2.10
+  port: 22
+  platform: nokia_sros  # For Netmiko 4.x
+  # username: admin
+  # password: admin

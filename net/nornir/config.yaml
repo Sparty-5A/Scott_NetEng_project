@@ -1,0 +1,9 @@
+inventory:
+  plugin: SimpleInventory
+  options:
+    host_file: net/nornir/inventory/hosts.yaml
+    group_file: net/nornir/inventory/groups.yaml
+    defaults_file: net/nornir/inventory/defaults.yaml
+# Disable Nornir's own logging to avoid conflicts (Loguru handles it)
+logging:
+  enabled: false
