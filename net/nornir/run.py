@@ -8,7 +8,7 @@ from net.nornir.tasks.show import show_router_interface
 def main():
     parser = argparse.ArgumentParser(description="Run Nornir show command")
     parser.add_argument("--host", required=True, help="Host filter: inventory name or hostname")
-    parser.add_argument("--cmd", default="show router interface", help="Command to run (classic CLI)")
+    parser.add_argument("--cmd", default="show ip interface brief")
     args = parser.parse_args()
 
     logger, console = setup_logging()
@@ -36,7 +36,7 @@ def main():
                 console.info(r.result)
 
     # Also print full Nornir result tree to console if desired:
-    # print_result(result)
+    print_result(result)
 
     return 0
 

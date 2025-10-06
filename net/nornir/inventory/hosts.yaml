@@ -1,7 +1,6 @@
-# Replace with your real devices
-example-router:
-  hostname: 192.0.2.10
+---
+cisco_8k-xe:
+  hostname: 10.10.20.48
   port: 22
-  platform: nokia_sros  # For Netmiko 4.x
-  # username: admin
-  # password: admin
+  platform: cisco_xe
+
