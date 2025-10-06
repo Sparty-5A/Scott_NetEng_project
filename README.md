@@ -1,6 +1,6 @@
-# NetEng Portfolio Template
+# NetEng Portfolio
 
-A ready-to-fork template that demonstrates **NetDevOps**, **Cloud networking**, and **Validation/Observability** patterns.
+A ready-to-fork project that demonstrates **NetDevOps**, **Cloud networking**, and **Validation/Observability** patterns.
 Designed for daily use and to showcase projects in interviews quickly.
 
 ## Highlights
