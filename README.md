@@ -22,7 +22,7 @@ pip install -r requirements.txt
 # 3) (Optional) Configure inventory for your devices in net/nornir/inventory/hosts.yaml
 
 # 4) Run a sample Nornir task (shows console output; DEBUG to logs/)
-python net/nornir/run.py --host 192.0.2.10 --cmd "show router interface"
+python net/nornir/run_ssh.py --host 192.0.2.10 --cmd "show router interface"
 ```
 
 > By default, **DEBUG** logs go to `logs/nornir_debug.log` while **console** shows only user-facing lines.

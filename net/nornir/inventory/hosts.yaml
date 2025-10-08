@@ -1,6 +1,15 @@
 ---
 cisco_8k-xe:
   hostname: 10.10.20.48
-  port: 22
   platform: cisco_xe
+  data:
+    restconf:
+      base_url: "https://10.10.20.48:443/restconf/"
+      username: "developer"
+      password: "C1sco12345"
+      verify_ssl: false
+#cisco_8k-xe:
+#  hostname: 10.10.20.48
+#  port: 22
+#  platform: cisco_xe
 

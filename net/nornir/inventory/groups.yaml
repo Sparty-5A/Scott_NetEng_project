@@ -1,19 +1,4 @@
 ---
-nokia:
-  platform: nokia_sros
-  username: "admin"
-  password: "DA30t13r3!"
-
-nokia_mads:
-  platform: nokia_sros
-  username: "admin"
-  password: "DA30t13r3!"
-
-cisco_ios:
-  platform: cisco_ios
-  username: "CiscoPrimeServer"
-  password: "BIPDBLzt9amkpzT"
-
 cisco_xe:
   platform: cisco_xe
   username: "developer"
