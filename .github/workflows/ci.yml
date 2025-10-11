@@ -19,8 +19,7 @@ jobs:
           ruff --version
           ruff check .
           black --check .
-      - name: Tests
+      - name: Run tests
         env:
           SKIP_NETWORK_TESTS: "1"
-        run: |
-          pytest -q
+        run: pytest tests/ -v --tb=short

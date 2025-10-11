@@ -40,3 +40,14 @@ validation/           # pyATS/Batfish scaffolding
 ## Notes
 - CI avoids contacting real devices; network tests are marked to skip by default.
 - Replace placeholders with your actual org tooling (e.g., TGW, SD-WAN controllers, etc.).
+
+## Implementation Notes
+
+### Transport: RESTCONF vs SSH
+This project uses **RESTCONF** (requests/httpx) instead of traditional SSH/Netmiko for the following reasons:
+- More structured, API-driven approach (JSON vs CLI text parsing)
+- Better error handling and state management
+- Works more reliably with Cisco sandbox (IOS-XE 17.x)
+- Demonstrates modern network programmability patterns
+
+SSH/Netmiko tasks are included in the repo for reference but are not the primary transport.
