@@ -1,16 +1,18 @@
 import sys
-sys.path.insert(0,'/home/sparty/Scott_NetEng_project')
+sys.path.insert(0, '/')
 import argparse
 from nornir import InitNornir
 from nornir.core.filter import F
 from loguru import logger
-from net.nornir.tasks.show_httpx import restconf_get
+from tasks.show_rest import restconf_get
 
 def main():
-    p = argparse.ArgumentParser()
-    p.add_argument("--host", required=True, help="inventory name or hostname")
-    p.add_argument("--path", required=True, help="RESTCONF data path, e.g. 'ietf-interfaces:interfaces'")
-    args = p.parse_args()
+    logger.add("logs/nornir_debug.log", rotation="10 MB", level="INFO")
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--host", required=True, help="inventory name or hostname")
+    parser.add_argument("--path", required=True, help="RESTCONF data path, e.g. 'ietf-interfaces:interfaces'")
+    args = parser.parse_args()
 
     # logger, console = setup_logging()
 
@@ -32,7 +34,6 @@ def main():
             logger.info(f"[{h}] {status}")
             if r.result:
                 logger.info(r.result)
-
     return 0
 
 if __name__ == "__main__":

@@ -1,5 +1,4 @@
 from nornir import InitNornir
-from nornir.core.filter import F
 from nornir_utils.plugins.functions import print_result
 from automation.lib.logging_setup import setup_logging
 from net.nornir.tasks.show_ssh import show_router_interface

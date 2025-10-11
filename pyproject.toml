@@ -1,0 +1,132 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "scott-neteng-project"
+version = "0.1.0"
+description = "NetDevOps portfolio demonstrating network automation, cloud infrastructure, and validation patterns"
+requires-python = ">=3.12"
+authors = [
+    {name = "Scott", email = "your.email@example.com"}
+]
+readme = "README.md"
+license = {text = "MIT"}
+keywords = ["network-automation", "devops", "nornir", "restconf", "terraform", "nso", "cisco"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    # Code quality
+    "black>=24.3",
+    "pre-commit>=3.7",
+    "ruff>=0.5",
+
+    # Testing
+    "pytest>=7.4",
+
+    # Logging
+    "loguru>=0.7.3",
+
+    # HTTP clients
+    "httpx>=0.27",
+    "requests>=2.32.5",
+    "urllib3>=2.0.0",        # NEW: for NSO SSL handling
+
+    # Week 1: Cisco 8000v - Scrapli
+    "scrapli>=2024.1.30",    # NEW: for direct device automation
+
+    # Week 1: NSO (uses requests - already have it)
+
+    # Future: Nornir framework
+    "nornir>=3.5.0",
+    "nornir-netmiko>=1.0.1",
+    "nornir-utils>=0.2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest-cov>=4.0",
+    "pytest-xdist>=3.0",
+    "ipython>=8.20.0",       # NEW: useful for interactive testing
+]
+
+[project.urls]
+Homepage = "https://github.com/Sparty-5A/Scott_NetEng_project"
+Repository = "https://github.com/Sparty-5A/Scott_NetEng_project"
+
+[tool.hatch.build.targets.wheel]
+packages = [
+    "net",
+    "automation",
+    "validation",
+    "week1-cisco-8000v-basics",      # NEW: module packages
+    "week1-nso-orchestration"        # NEW: module packages
+]
+
+[tool.pytest.ini_options]
+pythonpath = "."
+testpaths = [
+    "week1-cisco-8000v-basics/tests",            # NEW
+    "week1-nso-orchestration/tests"              # NEW
+]
+python_files = "test_*.py pytest_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+addopts = [
+    "-v",
+    "--tb=short",
+    "-ra",
+    "--strict-markers",
+]
+markers = [
+    "slow: marks tests as slow",
+    "network: marks tests that require network access",
+    "integration: marks integration tests",
+    "devnet_sandbox: tests requiring DevNet sandbox",     # NEW
+    "nso: tests requiring NSO connectivity",              # NEW
+]
+
+[tool.black]
+line-length = 100
+target-version = ['py312']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  \.eggs
+  | \.git
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+]
+ignore = [
+    "E501",  # line too long (handled by black)
+]
+exclude = [
+    ".venv",
+    "venv",
+    ".git",
+    "__pycache__",
+    "build",
+    "dist",
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]

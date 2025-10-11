@@ -8,8 +8,4 @@ cisco_8k-xe:
       username: "developer"
       password: "C1sco12345"
       verify_ssl: false
-#cisco_8k-xe:
-#  hostname: 10.10.20.48
-#  port: 22
-#  platform: cisco_xe
 

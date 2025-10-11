@@ -1,6 +1,6 @@
 import json
 import httpx
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 from nornir.core.task import Task, Result
 
 HEADERS = {
@@ -8,16 +8,23 @@ HEADERS = {
     "Content-Type": "application/yang-data+json",
 }
 
+_STORE_KEY = "_restconf_httpx"   # where we keep per-host client in host.data
+
+def _get_store(task: Task) -> Dict[str, Any]:
+    # Ensure a dedicated namespace in host.data
+    store = task.host.data.get(_STORE_KEY)
+    if store is None:
+        store = {}
+        task.host.data[_STORE_KEY] = store
+    return store
+
 def _get_client(task: Task) -> httpx.Client:
-    """
-    Cache a per-host httpx.Client for connection pooling.
-    """
-    key = "_restconf_httpx_client"
-    client = task.host.get(key)
+    store = _get_store(task)
+    client = store.get("client")
     if client:
         return client
 
-    rc: Dict[str, Any] = task.host.get("restconf") or task.host.data.get("restconf", {})
+    rc: Dict[str, Any] = task.host.data.get("restconf", {})
     base = rc.get("base_url")
     user = rc.get("username")
     pwd  = rc.get("password")
@@ -32,8 +39,7 @@ def _get_client(task: Task) -> httpx.Client:
         headers=HEADERS,
         verify=verify
     )
-    # cache it for this host
-    task.host[key] = client
+    store["client"] = client
     return client
 
 def _pretty_json(body: Any) -> str:
@@ -96,3 +102,17 @@ def restconf_delete(task: Task, path: str) -> Result:
                       result=f"DELETE {url} -> {e.response.status_code} {e.response.text}")
     except Exception as e:
         return Result(host=task.host, failed=True, result=f"DELETE {url} failed: {e}")
+
+def restconf_close(task: Task) -> Result:
+    """Idempotent: safe to call even if client never existed or already closed."""
+    store = _get_store(task)
+    client = store.get("client")
+    if client is None:
+        return Result(host=task.host, result="no client", changed=False)
+    try:
+        client.close()
+    finally:
+        # remove the reference from host.data
+        store.pop("client", None)
+    return Result(host=task.host, result="closed", changed=False)
+
