@@ -47,6 +47,4 @@ jobs:
         run: uv sync
       
       - name: Run unit tests (skip integration/sandbox tests)
-        env:
-          SKIP_NETWORK_TESTS: "1"
         run: uv run pytest -m "not integration and not nso and not devnet_sandbox" -v --tb=short
