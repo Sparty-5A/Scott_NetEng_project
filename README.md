@@ -314,8 +314,8 @@ uv run python nso_orchestration/examples/sync_devices.py
 ## 📧 Contact
 
 **Scott [Last Name]**  
-📧 Email: your.email@example.com  
-🔗 LinkedIn: [linkedin.com/in/yourprofile](https://linkedin.com/in/yourprofile)  
+📧 Email: scottpenry@comcast.net  
+🔗 LinkedIn: [linkedin.com/in/scott-penry-0a277829/](https://linkedin.com/in/scott-penry-0a277829/)  
 💼 GitHub: [github.com/Sparty-5A](https://github.com/Sparty-5A)
 
 ---
