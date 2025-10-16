@@ -49,7 +49,7 @@ Scott_NetEng_project/
 
 ## ✅ Completed Work
 
-### Week 1: NSO Orchestration & Device Automation
+### Task 1: NSO Orchestration & Device Automation
 
 #### 🔧 **Cisco NSO RESTCONF Client**
 - **Full RESTCONF API wrapper** with httpx
@@ -127,7 +127,7 @@ uv run python nso_orchestration/examples/sync_devices.py
 
 ## 🚧 Planned Work
 
-### Week 2: AWS Cloud Networking (In Progress)
+### Task 2: AWS Cloud Networking (In Progress)
 **Skills:** Terraform, AWS VPC, Site-to-Site VPN, hybrid cloud
 
 **Planned Deliverables:**
@@ -139,7 +139,7 @@ uv run python nso_orchestration/examples/sync_devices.py
 
 ---
 
-### Week 3: SD-WAN / Overlay Design
+### Task 3: SD-WAN / Overlay Design
 **Skills:** Application-aware routing, policy-based forwarding, telemetry
 
 **Planned Deliverables:**
@@ -151,7 +151,7 @@ uv run python nso_orchestration/examples/sync_devices.py
 
 ---
 
-### Week 4: Observability & Intent Validation
+### Task 4: Observability & Intent Validation
 **Skills:** Streaming telemetry, gNMI, SLOs, SRE practices
 
 **Planned Deliverables:**
@@ -313,7 +313,7 @@ uv run python nso_orchestration/examples/sync_devices.py
 
 ## 📧 Contact
 
-**Scott [Last Name]**  
+**Scott Penry**  
 📧 Email: scottpenry@comcast.net  
 🔗 LinkedIn: [linkedin.com/in/scott-penry-0a277829/](https://linkedin.com/in/scott-penry-0a277829/)  
 💼 GitHub: [github.com/Sparty-5A](https://github.com/Sparty-5A)
