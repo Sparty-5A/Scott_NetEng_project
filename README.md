@@ -19,7 +19,7 @@ This repository demonstrates production-ready network automation and orchestrati
 - **Cloud Networking** (AWS - planned)
 - **SD-WAN/Overlay Design** (planned)
 
-**Background:** CCNP Enterprise, DevNet Associate, Python/NETCONF/RESTCONF/gNMI experience
+**Background:** CCNP Routing & Switching, DevNet Associate, Python/NETCONF/RESTCONF/gNMI experience
 
 ---
 
@@ -27,12 +27,12 @@ This repository demonstrates production-ready network automation and orchestrati
 
 ```
 Scott_NetEng_project/
-├── cisco_8000v_basics/          # Week 1: Direct device automation
+├── cisco_8000v_basics/          # Direct device automation
 │   ├── automation/              # Scrapli helpers, safe getters
 │   ├── net/nornir/             # Nornir tasks (RESTCONF, SSH)
 │   └── tests/                  # Integration tests
 │
-├── nso_orchestration/          # Week 1: NSO orchestration
+├── nso_orchestration/          # NSO orchestration
 │   ├── automation/
 │   │   └── nso_client.py       # NSO RESTCONF client
 │   ├── examples/
