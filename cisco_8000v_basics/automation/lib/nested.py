@@ -1,9 +1,13 @@
-from typing import Any, Union
+from typing import Any
+
 from loguru import logger
 
 _MISSING = object()
 
-def get_nested(data: Union[dict, list], *path: Union[str, int], default: Any = _MISSING, strict: bool = False) -> Any:
+
+def get_nested(
+    data: dict | list, *path: str | int, default: Any = _MISSING, strict: bool = False
+) -> Any:
     """Dynamic, safe traversal using Python 3.10+ structural pattern matching."""
     cur = data
     for i, key in enumerate(path, 1):

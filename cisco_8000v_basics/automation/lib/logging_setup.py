@@ -1,7 +1,9 @@
+import logging
 import os
 import sys
-import logging
+
 from loguru import logger
+
 
 class InterceptHandler(logging.Handler):
     """Bridge stdlib logging -> Loguru, preserving level and caller site."""
@@ -57,7 +59,7 @@ def setup_logging(log_dir: str = "logs", console_level: str = "INFO"):
         enqueue=True,
         backtrace=True,
         diagnose=False,
-        format="{time:YYYY-MM-DD HH:mm:ss.SSS} | {level: <8} | {name}:{function}:{line} - {message}"
+        format="{time:YYYY-MM-DD HH:mm:ss.SSS} | {level: <8} | {name}:{function}:{line} - {message}",
     )
 
     # 2) CONSOLE SINK: Only messages tagged with console=True
@@ -70,7 +72,7 @@ def setup_logging(log_dir: str = "logs", console_level: str = "INFO"):
         level=console_level,
         filter=console_filter,
         colorize=True,
-        format="<level>{message}</level>"
+        format="<level>{message}</level>",
     )
 
     # Create two bound loggers

@@ -1,8 +1,12 @@
 """
 Pytest configuration for validation tests.
 """
+
 import sys
 from pathlib import Path
+
+import pytest
+from nornir import InitNornir
 
 # Calculate project root correctly
 # This file is at: validation/tests/conftest.py
@@ -19,9 +23,6 @@ config_path = project_root / "net" / "nornir" / "config.yaml"
 print(f"DEBUG: Config path: {config_path}")
 print(f"DEBUG: Config exists: {config_path.exists()}")
 
-import pytest
-from nornir import InitNornir
-
 
 @pytest.fixture(scope="session")
 def project_root_path():
@@ -32,7 +33,7 @@ def project_root_path():
 @pytest.fixture(scope="function")
 def nornir_instance(project_root_path):
     """Reusable Nornir instance for all tests in a module."""
-    from net.nornir.tasks.show_httpx import restconf_close
+    from cisco_8000v_basics.net.nornir.tasks.show_httpx import restconf_close
 
     # Define paths relative to project root
     nornir_dir = project_root_path / "net" / "nornir"
@@ -54,9 +55,9 @@ def nornir_instance(project_root_path):
                 "host_file": str(inventory_dir / "hosts.yaml"),
                 "group_file": str(inventory_dir / "groups.yaml"),
                 "defaults_file": str(inventory_dir / "defaults.yaml"),
-            }
+            },
         },
-        logging={"enabled": False}
+        logging={"enabled": False},
     )
 
     yield nr

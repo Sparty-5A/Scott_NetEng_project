@@ -1,8 +1,9 @@
 import json
+from typing import Any
+
 import httpx
-from typing import Any, Dict
-from nornir.core.task import Task, Result
 from loguru import logger
+from nornir.core.task import Result, Task
 
 HEADERS = {
     "Accept": "application/yang-data+json",
@@ -12,7 +13,7 @@ HEADERS = {
 _STORE_KEY = "_restconf_httpx"  # where we keep per-host client in host.data
 
 
-def _get_store(task: Task) -> Dict[str, Any]:
+def _get_store(task: Task) -> dict[str, Any]:
     """Ensure a dedicated namespace in host.data"""
     store = task.host.data.get(_STORE_KEY)
     if store is None:
@@ -35,13 +36,15 @@ def _get_client(task: Task) -> httpx.Client:
             return client
 
     # Extract RESTCONF config from host data
-    rc: Dict[str, Any] = task.host.data.get("restconf", {})
+    rc: dict[str, Any] = task.host.data.get("restconf", {})
     base = rc.get("base_url")
     user = rc.get("username")
     pwd = rc.get("password")
     verify = rc.get("verify_ssl", True)
 
-    logger.debug(f"[{task.host.name}] RESTCONF config: base_url={base}, username={user}, verify_ssl={verify}")
+    logger.debug(
+        f"[{task.host.name}] RESTCONF config: base_url={base}, username={user}, verify_ssl={verify}"
+    )
 
     if not base or not user or not pwd:
         logger.error(f"[{task.host.name}] Missing required RESTCONF credentials in host data")
@@ -54,11 +57,12 @@ def _get_client(task: Task) -> httpx.Client:
         auth=(user, pwd),  # Note: password not logged (security)
         headers=HEADERS,
         verify=verify,
-        timeout=30.0  # Added explicit timeout
+        timeout=30.0,  # Added explicit timeout
     )
     store["client"] = client
     logger.debug(f"[{task.host.name}] httpx.Client created and stored")
     return client
+
 
 def _pretty_json(body: Any) -> str:
     """Format JSON for display"""
@@ -99,9 +103,14 @@ def restconf_get(task: Task, path: str) -> Result:
         return Result(host=task.host, result=_pretty_json(content), changed=False)
 
     except httpx.HTTPStatusError as e:
-        logger.error(f"[{task.host.name}] HTTP error {e.response.status_code}: {e.response.text[:200]}")
-        return Result(host=task.host, failed=True,
-                      result=f"GET {url} -> {e.response.status_code} {e.response.text}")
+        logger.error(
+            f"[{task.host.name}] HTTP error {e.response.status_code}: {e.response.text[:200]}"
+        )
+        return Result(
+            host=task.host,
+            failed=True,
+            result=f"GET {url} -> {e.response.status_code} {e.response.text}",
+        )
     except httpx.TimeoutException as e:
         logger.error(f"[{task.host.name}] Request timeout: {e}")
         return Result(host=task.host, failed=True, result=f"GET {url} timed out: {e}")
@@ -111,7 +120,7 @@ def restconf_get(task: Task, path: str) -> Result:
         return Result(host=task.host, failed=True, result=f"GET {url} failed: {e}")
 
 
-def restconf_put(task: Task, path: str, payload: Dict[str, Any]) -> Result:
+def restconf_put(task: Task, path: str, payload: dict[str, Any]) -> Result:
     """Execute RESTCONF PUT request"""
     logger.debug(f"[{task.host.name}] Starting RESTCONF PUT for path: {path}")
 
@@ -139,9 +148,14 @@ def restconf_put(task: Task, path: str, payload: Dict[str, Any]) -> Result:
         return Result(host=task.host, result=_pretty_json(body), changed=True)
 
     except httpx.HTTPStatusError as e:
-        logger.error(f"[{task.host.name}] HTTP error {e.response.status_code}: {e.response.text[:200]}")
-        return Result(host=task.host, failed=True,
-                      result=f"PUT {url} -> {e.response.status_code} {e.response.text}")
+        logger.error(
+            f"[{task.host.name}] HTTP error {e.response.status_code}: {e.response.text[:200]}"
+        )
+        return Result(
+            host=task.host,
+            failed=True,
+            result=f"PUT {url} -> {e.response.status_code} {e.response.text}",
+        )
     except httpx.TimeoutException as e:
         logger.error(f"[{task.host.name}] Request timeout: {e}")
         return Result(host=task.host, failed=True, result=f"PUT {url} timed out: {e}")
@@ -151,7 +165,7 @@ def restconf_put(task: Task, path: str, payload: Dict[str, Any]) -> Result:
         return Result(host=task.host, failed=True, result=f"PUT {url} failed: {e}")
 
 
-def restconf_patch(task: Task, path: str, payload: Dict[str, Any]) -> Result:
+def restconf_patch(task: Task, path: str, payload: dict[str, Any]) -> Result:
     """Execute RESTCONF PATCH request"""
     logger.debug(f"[{task.host.name}] Starting RESTCONF PATCH for path: {path}")
 
@@ -178,9 +192,14 @@ def restconf_patch(task: Task, path: str, payload: Dict[str, Any]) -> Result:
         return Result(host=task.host, result=_pretty_json(body), changed=True)
 
     except httpx.HTTPStatusError as e:
-        logger.error(f"[{task.host.name}] HTTP error {e.response.status_code}: {e.response.text[:200]}")
-        return Result(host=task.host, failed=True,
-                      result=f"PATCH {url} -> {e.response.status_code} {e.response.text}")
+        logger.error(
+            f"[{task.host.name}] HTTP error {e.response.status_code}: {e.response.text[:200]}"
+        )
+        return Result(
+            host=task.host,
+            failed=True,
+            result=f"PATCH {url} -> {e.response.status_code} {e.response.text}",
+        )
     except httpx.TimeoutException as e:
         logger.error(f"[{task.host.name}] Request timeout: {e}")
         return Result(host=task.host, failed=True, result=f"PATCH {url} timed out: {e}")
@@ -214,9 +233,14 @@ def restconf_delete(task: Task, path: str) -> Result:
         return Result(host=task.host, result="deleted", changed=True)
 
     except httpx.HTTPStatusError as e:
-        logger.error(f"[{task.host.name}] HTTP error {e.response.status_code}: {e.response.text[:200]}")
-        return Result(host=task.host, failed=True,
-                      result=f"DELETE {url} -> {e.response.status_code} {e.response.text}")
+        logger.error(
+            f"[{task.host.name}] HTTP error {e.response.status_code}: {e.response.text[:200]}"
+        )
+        return Result(
+            host=task.host,
+            failed=True,
+            result=f"DELETE {url} -> {e.response.status_code} {e.response.text}",
+        )
     except httpx.TimeoutException as e:
         logger.error(f"[{task.host.name}] Request timeout: {e}")
         return Result(host=task.host, failed=True, result=f"DELETE {url} timed out: {e}")

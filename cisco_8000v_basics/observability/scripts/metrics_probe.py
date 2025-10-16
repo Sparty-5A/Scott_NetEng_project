@@ -1,5 +1,9 @@
-import time, subprocess, sys
+import subprocess
+import sys
+import time
+
 from loguru import logger
+
 
 def ping(host: str, count: int = 3) -> float | None:
     try:
@@ -12,6 +16,7 @@ def ping(host: str, count: int = 3) -> float | None:
     except Exception as e:
         logger.error(f"ping failed: {e}")
     return None
+
 
 if __name__ == "__main__":
     host = sys.argv[1] if len(sys.argv) > 1 else "8.8.8.8"

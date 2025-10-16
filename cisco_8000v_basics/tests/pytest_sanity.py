@@ -2,30 +2,31 @@
 Network validation tests using RESTCONF.
 These tests verify connectivity and data retrieval from network devices.
 """
-import os
+
 import json
+
 import pytest
 from nornir.core.filter import F
-from net.nornir.tasks.show_httpx import restconf_get
 
-# CI/CD skip flag
-skip_net = os.getenv("SKIP_NETWORK_TESTS") == "1"
+from cisco_8000v_basics.net.nornir.tasks.show_httpx import restconf_get
+
 
 def test_project_structure(project_root_path):
-    """Verify expected project structure exists."""
+    """Verify cisco_8000v_basics module structure exists."""
+    base = project_root_path / "cisco_8000v_basics"
+
     required_dirs = [
-        project_root_path / "net" / "nornir" / "tasks",
-        project_root_path / "net" / "nornir" / "inventory",
-        project_root_path / "automation" / "lib",
-        project_root_path / "logs",
+        base / "net/nornir/tasks",
+        base / "automation/lib",
+        base / "tests",
     ]
 
     for dir_path in required_dirs:
         assert dir_path.exists(), f"Required directory missing: {dir_path}"
 
-    print(f"✓ Project structure validated at {project_root_path}")
 
-@pytest.mark.skipif(skip_net, reason="Skipping network tests in CI")
+@pytest.mark.devnet_sandbox
+@pytest.mark.integration
 def test_interfaces_present_and_named(nornir_instance):
     """Validate that RESTCONF can retrieve interfaces and they have required fields."""
     flt = nornir_instance.filter(F(name="cisco_8k-xe"))
@@ -52,7 +53,9 @@ def test_interfaces_present_and_named(nornir_instance):
 
     print(f"✓ Retrieved {len(ifaces)} interfaces")
 
-@pytest.mark.skipif(skip_net, reason="Skipping network tests in CI")
+
+@pytest.mark.devnet_sandbox
+@pytest.mark.integration
 def test_interface_operational_data(nornir_instance):
     """Verify operational status is retrievable and valid."""
     flt = nornir_instance.filter(F(name="cisco_8k-xe"))
@@ -71,7 +74,8 @@ def test_interface_operational_data(nornir_instance):
     print(f"✓ Found {len(oper_up)}/{len(ifaces)} interfaces operationally up")
 
 
-@pytest.mark.skipif(skip_net, reason="Skipping network tests in CI")
+@pytest.mark.devnet_sandbox
+@pytest.mark.integration
 def test_restconf_error_handling(nornir_instance):
     """Test that invalid paths return proper errors without crashing."""
     flt = nornir_instance.filter(F(name="cisco_8k-xe"))
@@ -83,12 +87,15 @@ def test_restconf_error_handling(nornir_instance):
     for host, multi_result in res.items():
         result = multi_result[0]
         assert result.failed, "Expected task to fail for invalid path"
-        assert "404" in str(result.result) or "400" in str(result.result), \
-            "Expected HTTP 404/400 error"
+        assert "404" in str(result.result) or "400" in str(
+            result.result
+        ), "Expected HTTP 404/400 error"
 
     print("✓ Error handling working correctly")
 
-@pytest.mark.skipif(skip_net, reason="Skipping network tests in CI")
+
+@pytest.mark.devnet_sandbox
+@pytest.mark.integration
 def test_client_reuse(nornir_instance):
     """Verify httpx client is reused across multiple calls."""
     flt = nornir_instance.filter(F(name="cisco_8k-xe"))
@@ -98,7 +105,7 @@ def test_client_reuse(nornir_instance):
     assert not res1.failed
 
     # Second call - should reuse client
-    res2 = flt.run(task=restconf_get, path="openconfig-interfaces:interfaces")
+    _ = flt.run(task=restconf_get, path="openconfig-interfaces:interfaces")
     # Note: This might fail on some devices if interfaces-state isn't supported
 
     # Check that client was stored (implies reuse)
@@ -108,7 +115,9 @@ def test_client_reuse(nornir_instance):
 
     print("✓ Client reuse mechanism working")
 
-@pytest.mark.skipif(skip_net, reason="Skipping network tests in CI")
+
+@pytest.mark.devnet_sandbox
+@pytest.mark.integration
 def test_response_time_reasonable(nornir_instance):
     """Basic performance check - RESTCONF should respond within reasonable time."""
     import time
@@ -124,7 +133,9 @@ def test_response_time_reasonable(nornir_instance):
 
     print(f"✓ Response time: {elapsed:.2f}s")
 
-@pytest.mark.skipif(skip_net, reason="Skipping network tests in CI")
+
+@pytest.mark.devnet_sandbox
+@pytest.mark.integration
 def test_pre_post_validation_pattern(nornir_instance):
     """Demonstrate safe change pattern: pre-check → (change) → post-check → verify."""
     flt = nornir_instance.filter(F(name="cisco_8k-xe"))
@@ -145,10 +156,10 @@ def test_pre_post_validation_pattern(nornir_instance):
     post_count = len(post_ifaces)
 
     # VERIFY: State should be consistent (since we didn't actually change anything)
-    assert pre_count == post_count, \
-        f"Interface count mismatch: pre={pre_count}, post={post_count}"
+    assert pre_count == post_count, f"Interface count mismatch: pre={pre_count}, post={post_count}"
 
     print(f"✓ Pre/post validation pattern working (verified {pre_count} interfaces)")
+
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "-s"])

@@ -1,16 +1,18 @@
 import json
+from typing import Any
+
 import httpx
-from typing import Any, Dict
-from nornir.core.task import Task, Result
+from nornir.core.task import Result, Task
 
 HEADERS = {
     "Accept": "application/yang-data+json",
     "Content-Type": "application/yang-data+json",
 }
 
-_STORE_KEY = "_restconf_httpx"   # where we keep per-host client in host.data
+_STORE_KEY = "_restconf_httpx"  # where we keep per-host client in host.data
 
-def _get_store(task: Task) -> Dict[str, Any]:
+
+def _get_store(task: Task) -> dict[str, Any]:
     # Ensure a dedicated namespace in host.data
     store = task.host.data.get(_STORE_KEY)
     if store is None:
@@ -18,35 +20,35 @@ def _get_store(task: Task) -> Dict[str, Any]:
         task.host.data[_STORE_KEY] = store
     return store
 
+
 def _get_client(task: Task) -> httpx.Client:
     store = _get_store(task)
     client = store.get("client")
     if client:
         return client
 
-    rc: Dict[str, Any] = task.host.data.get("restconf", {})
+    rc: dict[str, Any] = task.host.data.get("restconf", {})
     base = rc.get("base_url")
     user = rc.get("username")
-    pwd  = rc.get("password")
+    pwd = rc.get("password")
     verify = rc.get("verify_ssl", True)
 
     if not base or not user or not pwd:
         raise ValueError("Missing restconf.base_url/username/password in host data")
 
     client = httpx.Client(
-        base_url=base.rstrip("/"),
-        auth=(user, pwd),
-        headers=HEADERS,
-        verify=verify
+        base_url=base.rstrip("/"), auth=(user, pwd), headers=HEADERS, verify=verify
     )
     store["client"] = client
     return client
+
 
 def _pretty_json(body: Any) -> str:
     try:
         return json.dumps(body, indent=2)
     except Exception:
         return str(body)
+
 
 def restconf_get(task: Task, path: str) -> Result:
     client = _get_client(task)
@@ -57,12 +59,16 @@ def restconf_get(task: Task, path: str) -> Result:
         content = resp.json() if "json" in resp.headers.get("content-type", "") else resp.text
         return Result(host=task.host, result=_pretty_json(content), changed=False)
     except httpx.HTTPStatusError as e:
-        return Result(host=task.host, failed=True,
-                      result=f"GET {url} -> {e.response.status_code} {e.response.text}")
+        return Result(
+            host=task.host,
+            failed=True,
+            result=f"GET {url} -> {e.response.status_code} {e.response.text}",
+        )
     except Exception as e:
         return Result(host=task.host, failed=True, result=f"GET {url} failed: {e}")
 
-def restconf_put(task: Task, path: str, payload: Dict[str, Any]) -> Result:
+
+def restconf_put(task: Task, path: str, payload: dict[str, Any]) -> Result:
     client = _get_client(task)
     url = f"/data/{path.strip('/')}"
     try:
@@ -71,12 +77,16 @@ def restconf_put(task: Task, path: str, payload: Dict[str, Any]) -> Result:
         body = resp.json() if resp.content else {"status": "ok"}
         return Result(host=task.host, result=_pretty_json(body), changed=True)
     except httpx.HTTPStatusError as e:
-        return Result(host=task.host, failed=True,
-                      result=f"PUT {url} -> {e.response.status_code} {e.response.text}")
+        return Result(
+            host=task.host,
+            failed=True,
+            result=f"PUT {url} -> {e.response.status_code} {e.response.text}",
+        )
     except Exception as e:
         return Result(host=task.host, failed=True, result=f"PUT {url} failed: {e}")
 
-def restconf_patch(task: Task, path: str, payload: Dict[str, Any]) -> Result:
+
+def restconf_patch(task: Task, path: str, payload: dict[str, Any]) -> Result:
     client = _get_client(task)
     url = f"/data/{path.strip('/')}"
     try:
@@ -85,10 +95,14 @@ def restconf_patch(task: Task, path: str, payload: Dict[str, Any]) -> Result:
         body = resp.json() if resp.content else {"status": "ok"}
         return Result(host=task.host, result=_pretty_json(body), changed=True)
     except httpx.HTTPStatusError as e:
-        return Result(host=task.host, failed=True,
-                      result=f"PATCH {url} -> {e.response.status_code} {e.response.text}")
+        return Result(
+            host=task.host,
+            failed=True,
+            result=f"PATCH {url} -> {e.response.status_code} {e.response.text}",
+        )
     except Exception as e:
         return Result(host=task.host, failed=True, result=f"PATCH {url} failed: {e}")
+
 
 def restconf_delete(task: Task, path: str) -> Result:
     client = _get_client(task)
@@ -98,10 +112,14 @@ def restconf_delete(task: Task, path: str) -> Result:
         resp.raise_for_status()
         return Result(host=task.host, result="deleted", changed=True)
     except httpx.HTTPStatusError as e:
-        return Result(host=task.host, failed=True,
-                      result=f"DELETE {url} -> {e.response.status_code} {e.response.text}")
+        return Result(
+            host=task.host,
+            failed=True,
+            result=f"DELETE {url} -> {e.response.status_code} {e.response.text}",
+        )
     except Exception as e:
         return Result(host=task.host, failed=True, result=f"DELETE {url} failed: {e}")
+
 
 def restconf_close(task: Task) -> Result:
     """Idempotent: safe to call even if client never existed or already closed."""
@@ -115,4 +133,3 @@ def restconf_close(task: Task) -> Result:
         # remove the reference from host.data
         store.pop("client", None)
     return Result(host=task.host, result="closed", changed=False)
-

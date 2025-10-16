@@ -6,41 +6,25 @@ device management, and test cleanup.
 """
 
 import pytest
-import os
+from decouple import config
 from loguru import logger
-from automation.nso_client import NSOClient
+
+from nso_orchestration.automation.nso_client import NSOClient
 
 # Configure loguru for tests
 logger.remove()  # Remove default handler
-logger.add(
-    "logs/test_{time}.log",
-    rotation="1 day",
-    retention="7 days",
-    level="DEBUG"
-)
-logger.add(
-    lambda msg: print(msg, end=""),  # Console output
-    level="INFO",
-    colorize=True
-)
+logger.add("logs/test_{time}.log", rotation="1 day", retention="7 days", level="DEBUG")
+logger.add(lambda msg: print(msg, end=""), level="INFO", colorize=True)  # Console output
 
 
 @pytest.fixture(scope="session")
 def nso_credentials():
-    """
-    NSO credentials from environment variables.
-
-    Set these before running tests:
-        export NSO_HOST=10.10.20.49
-        export NSO_PORT=8888
-        export NSO_USERNAME=admin
-        export NSO_PASSWORD=admin
-    """
+    """NSO credentials from environment variables."""
     return {
-        "host": os.getenv("NSO_HOST", "sandbox-nso-1.cisco.com"),
-        "port": int(os.getenv("NSO_PORT", "8888")),
-        "username": os.getenv("NSO_USERNAME", "admin"),
-        "password": os.getenv("NSO_PASSWORD", "admin"),
+        "host": config("NSO_HOST", default="10.10.20.49"),
+        "port": config("NSO_PORT", default=8080, cast=int),
+        "username": config("NSO_USER", default="developer"),
+        "password": config("NSO_PW", default="C1sco12345"),
     }
 
 
@@ -102,17 +86,21 @@ def test_device(available_devices):
     """
     Provide a single test device for simple tests.
 
-    Returns the first IOS XE device found, or skips if none available.
+    Returns an IOS-XE device (not IOS XR), or skips if none available.
     """
-    # Prefer devices with 'rtr' or 'router' in the name (typically IOS XE)
+    # Prefer IOS-XE devices (dist-rtr, internet-rtr)
     for device in available_devices:
-        if any(keyword in device.lower() for keyword in ['rtr', 'router', 'csr', 'ios']):
+        if any(keyword in device.lower() for keyword in ["dist-rtr", "internet-rtr"]):
+            logger.info(f"Selected IOS-XE test device: {device}")
+            return device
+
+    # Fallback: any device with 'rtr' but NOT 'core' (which is IOS XR)
+    for device in available_devices:
+        if "rtr" in device.lower() and "core" not in device.lower():
             logger.info(f"Selected test device: {device}")
             return device
 
-    # Fallback to first device
-    logger.info(f"Using first available device: {available_devices[0]}")
-    return available_devices[0]
+    pytest.skip("No suitable IOS-XE device found for testing")
 
 
 @pytest.fixture(scope="function")
@@ -153,7 +141,9 @@ def clean_loopback(nso_client, test_device, request):
         created_loopbacks.append(loopback_id)
 
     # Make registration function available to tests
-    request.instance.register_loopback = _register_loopback if hasattr(request, 'instance') else None
+    request.instance.register_loopback = (
+        _register_loopback if hasattr(request, "instance") else None
+    )
 
     yield created_loopbacks
 
@@ -178,7 +168,7 @@ def test_loopback_config():
         "loopback_id": "100",
         "ip_address": "10.100.100.1",
         "netmask": "255.255.255.255",
-        "description": "TEST_LOOPBACK_DO_NOT_USE"
+        "description": "TEST_LOOPBACK_DO_NOT_USE",
     }
 
 
@@ -190,29 +180,20 @@ def log_test_info(request):
     This fixture runs for every test automatically.
     """
     test_name = request.node.name
-    logger.info(f"{'=' * 60}")
+    logger.info(f"{'='*60}")
     logger.info(f"Starting test: {test_name}")
-    logger.info(f"{'=' * 60}")
+    logger.info(f"{'='*60}")
 
     yield
 
-    logger.info(f"{'=' * 60}")
+    logger.info(f"{'='*60}")
     logger.info(f"Finished test: {test_name}")
-    logger.info(f"{'=' * 60}\n")
+    logger.info(f"{'='*60}\n")
 
 
 # Pytest configuration
 def pytest_configure(config):
     """Configure pytest with custom markers."""
-    config.addinivalue_line(
-        "markers",
-        "nso: mark test as requiring NSO connectivity"
-    )
-    config.addinivalue_line(
-        "markers",
-        "slow: mark test as slow running"
-    )
-    config.addinivalue_line(
-        "markers",
-        "integration: mark test as integration test"
-    )
+    config.addinivalue_line("markers", "nso: mark test as requiring NSO connectivity")
+    config.addinivalue_line("markers", "slow: mark test as slow running")
+    config.addinivalue_line("markers", "integration: mark test as integration test")

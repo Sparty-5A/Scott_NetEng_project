@@ -444,6 +444,21 @@ wheels = [
 ]
 
 [[package]]
+name = "hatchling"
+version = "1.27.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "packaging" },
+    { name = "pathspec" },
+    { name = "pluggy" },
+    { name = "trove-classifiers" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8f/8a/cc1debe3514da292094f1c3a700e4ca25442489731ef7c0814358816bb03/hatchling-1.27.0.tar.gz", hash = "sha256:971c296d9819abb3811112fc52c7a9751c8d381898f36533bb16f9791e941fd6", size = 54983, upload-time = "2024-12-15T17:08:11.894Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/08/e7/ae38d7a6dfba0533684e0b2136817d667588ae3ec984c1a4e5df5eb88482/hatchling-1.27.0-py3-none-any.whl", hash = "sha256:d3a2f3567c4f926ea39849cdf924c7e99e6686c9c8e288ae1037c8fa2a5d937b", size = 75794, upload-time = "2024-12-15T17:08:10.364Z" },
+]
+
+[[package]]
 name = "httpcore"
 version = "1.0.9"
 source = { registry = "https://pypi.org/simple" }
@@ -911,6 +926,15 @@ wheels = [
 ]
 
 [[package]]
+name = "python-decouple"
+version = "3.8"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/e1/97/373dcd5844ec0ea5893e13c39a2c67e7537987ad8de3842fe078db4582fa/python-decouple-3.8.tar.gz", hash = "sha256:ba6e2657d4f376ecc46f77a3a615e058d93ba5e465c01bbe57289bfb7cce680f", size = 9612, upload-time = "2023-03-01T19:38:38.143Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a2/d4/9193206c4563ec771faf2ccf54815ca7918529fe81f6adb22ee6d0e06622/python_decouple-3.8-py3-none-any.whl", hash = "sha256:d0d45340815b25f4de59c974b855bb38d03151d81b037d9e3f463b0c9f8cbd66", size = 9947, upload-time = "2023-03-01T19:38:36.015Z" },
+]
+
+[[package]]
 name = "pytokens"
 version = "0.1.10"
 source = { registry = "https://pypi.org/simple" }
@@ -1069,22 +1093,27 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "black" },
+    { name = "hatchling" },
     { name = "httpx" },
-    { name = "ipython" },
     { name = "loguru" },
     { name = "nornir" },
     { name = "nornir-netmiko" },
     { name = "nornir-utils" },
     { name = "pre-commit" },
     { name = "pytest" },
+    { name = "pytest-cov" },
+    { name = "pytest-xdist" },
+    { name = "python-decouple" },
     { name = "requests" },
     { name = "ruff" },
     { name = "scrapli" },
     { name = "urllib3" },
+    { name = "xmltodict" },
 ]
 
 [package.optional-dependencies]
 dev = [
+    { name = "ipython" },
     { name = "pytest-cov" },
     { name = "pytest-xdist" },
 ]
@@ -1092,20 +1121,25 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "black", specifier = ">=24.3" },
+    { name = "hatchling", specifier = ">=1.27.0" },
     { name = "httpx", specifier = ">=0.27" },
-    { name = "ipython", specifier = ">=9.6.0" },
+    { name = "ipython", marker = "extra == 'dev'", specifier = ">=8.20.0" },
     { name = "loguru", specifier = ">=0.7.3" },
     { name = "nornir", specifier = ">=3.5.0" },
     { name = "nornir-netmiko", specifier = ">=1.0.1" },
     { name = "nornir-utils", specifier = ">=0.2.0" },
     { name = "pre-commit", specifier = ">=3.7" },
     { name = "pytest", specifier = ">=7.4" },
+    { name = "pytest-cov", specifier = ">=4.0" },
     { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=4.0" },
+    { name = "pytest-xdist", specifier = ">=3.0" },
     { name = "pytest-xdist", marker = "extra == 'dev'", specifier = ">=3.0" },
+    { name = "python-decouple", specifier = ">=3.8" },
     { name = "requests", specifier = ">=2.32.5" },
     { name = "ruff", specifier = ">=0.5" },
-    { name = "scrapli", specifier = ">=2025.1.30" },
-    { name = "urllib3", specifier = ">=2.5.0" },
+    { name = "scrapli", specifier = ">=2024.1.30" },
+    { name = "urllib3", specifier = ">=2.0.0" },
+    { name = "xmltodict", specifier = ">=1.0.2" },
 ]
 provides-extras = ["dev"]
 
@@ -1181,6 +1215,15 @@ wheels = [
 ]
 
 [[package]]
+name = "trove-classifiers"
+version = "2025.9.11.17"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/ca/9a/778622bc06632529817c3c524c82749a112603ae2bbcf72ee3eb33a2c4f1/trove_classifiers-2025.9.11.17.tar.gz", hash = "sha256:931ca9841a5e9c9408bc2ae67b50d28acf85bef56219b56860876dd1f2d024dd", size = 16975, upload-time = "2025-09-11T17:07:50.97Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e1/85/a4ff8758c66f1fc32aa5e9a145908394bf9cf1c79ffd1113cfdeb77e74e4/trove_classifiers-2025.9.11.17-py3-none-any.whl", hash = "sha256:5d392f2d244deb1866556457d6f3516792124a23d1c3a463a2e8668a5d1c15dd", size = 14158, upload-time = "2025-09-11T17:07:49.886Z" },
+]
+
+[[package]]
 name = "typing-extensions"
 version = "4.15.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1228,4 +1271,13 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/b3/8f/705086c9d734d3b663af0e9bb3d4de6578d08f46b1b101c2442fd9aecaa2/win32_setctime-1.2.0.tar.gz", hash = "sha256:ae1fdf948f5640aae05c511ade119313fb6a30d7eabe25fef9764dca5873c4c0", size = 4867, upload-time = "2024-12-07T15:28:28.314Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/e1/07/c6fe3ad3e685340704d314d765b7912993bcb8dc198f0e7a89382d37974b/win32_setctime-1.2.0-py3-none-any.whl", hash = "sha256:95d644c4e708aba81dc3704a116d8cbc974d70b3bdb8be1d150e36be6e9d1390", size = 4083, upload-time = "2024-12-07T15:28:26.465Z" },
+]
+
+[[package]]
+name = "xmltodict"
+version = "1.0.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/6a/aa/917ceeed4dbb80d2f04dbd0c784b7ee7bba8ae5a54837ef0e5e062cd3cfb/xmltodict-1.0.2.tar.gz", hash = "sha256:54306780b7c2175a3967cad1db92f218207e5bc1aba697d887807c0fb68b7649", size = 25725, upload-time = "2025-09-17T21:59:26.459Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c0/20/69a0e6058bc5ea74892d089d64dfc3a62ba78917ec5e2cfa70f7c92ba3a5/xmltodict-1.0.2-py3-none-any.whl", hash = "sha256:62d0fddb0dcbc9f642745d8bbf4d81fd17d6dfaec5a15b5c1876300aad92af0d", size = 13893, upload-time = "2025-09-17T21:59:24.859Z" },
 ]

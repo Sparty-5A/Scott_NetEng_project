@@ -2,15 +2,22 @@
 # sys.path.insert(0, '/home/sparty/Scott_NetEng_project')
 
 import argparse
+
 from nornir import InitNornir
 from nornir.core.filter import F
-from net.nornir.tasks.show_httpx import restconf_get, restconf_close
-from automation.lib.logging_setup import setup_logging
+
+from cisco_8000v_basics.automation.lib.logging_setup import setup_logging
+from cisco_8000v_basics.net.nornir.tasks.show_httpx import restconf_close, restconf_get
+
 
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--host", required=True, help="inventory name or hostname")
-    p.add_argument("--path", required=True, help="RESTCONF data path, e.g. 'openconfig-interfaces:interfaces/interface'")
+    p.add_argument(
+        "--path",
+        required=True,
+        help="RESTCONF data path, e.g. 'openconfig-interfaces:interfaces/interface'",
+    )
     args = p.parse_args()
 
     logger, console = setup_logging()
