@@ -5,8 +5,9 @@ These models define the desired state of the network and validate
 configuration before it's pushed to devices.
 """
 
-from pydantic import BaseModel, Field, IPvAnyAddress, field_validator
 from typing import Literal
+
+from pydantic import BaseModel, Field, field_validator
 
 
 class LoopbackIntent(BaseModel):

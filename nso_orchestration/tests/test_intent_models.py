@@ -4,10 +4,11 @@ import pytest
 from pydantic import ValidationError
 
 from nso_orchestration.automation.intent_models import (
-    LoopbackIntent,
     DeviceIntent,
+    LoopbackIntent,
     NetworkIntent,
 )
+
 
 def test_valid_loopback():
     """Test valid loopback configuration."""

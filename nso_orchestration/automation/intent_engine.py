@@ -6,14 +6,15 @@ and calculates the minimal set of changes needed to achieve the intent.
 """
 
 from dataclasses import dataclass
-from loguru import logger
 from typing import Any
 
-from nso_orchestration.automation.nso_client import NSOClient
+from loguru import logger
+
 from nso_orchestration.automation.intent_models import (
-    NetworkIntent,
     DeviceIntent,
+    NetworkIntent,
 )
+from nso_orchestration.automation.nso_client import NSOClient
 
 
 @dataclass

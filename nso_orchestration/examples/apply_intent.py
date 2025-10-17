@@ -6,16 +6,17 @@ This script reads the intent file (desired state), compares it to
 actual device state, and applies only the necessary changes.
 """
 
+import json
 import sys
 from pathlib import Path
-from loguru import logger
-from decouple import config
-import yaml
-import json
 
-from nso_orchestration.automation.nso_client import NSOClient
-from nso_orchestration.automation.intent_models import NetworkIntent
+import yaml
+from decouple import config
+from loguru import logger
+
 from nso_orchestration.automation.intent_engine import IntentEngine
+from nso_orchestration.automation.intent_models import NetworkIntent
+from nso_orchestration.automation.nso_client import NSOClient
 
 
 def load_intent_from_yaml(file_path: Path) -> NetworkIntent:
