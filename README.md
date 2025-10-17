@@ -122,7 +122,60 @@ uv run python nso_orchestration/examples/sync_devices.py
 # ...
 # Sync complete: 9 succeeded, 0 failed
 ```
+## Deletion Policy
 
+The intent engine supports two modes for handling loopbacks that exist on devices but are not declared in the intent file:
+
+### Safe Mode (Default) ✅ Recommended
+```yaml
+devices:
+  - name: router1
+    delete_unmanaged_loopbacks: false  # or omit (defaults to false)
+    loopbacks:
+      - id: 100
+        ipv4: 10.100.100.1
+        netmask: 255.255.255.255
+```
+
+**Behavior:** Only manages loopbacks explicitly declared in intent. Existing loopbacks not in the intent file are **ignored** (not deleted).
+
+**Use when:**
+- ✅ Gradually adopting intent-based management
+- ✅ Multiple teams/tools manage different loopbacks
+- ✅ You want maximum safety against accidental deletion
+
+### Strict Mode ⚠️ Use with Caution
+```yaml
+devices:
+  - name: router1
+    delete_unmanaged_loopbacks: true
+    loopbacks:
+      - id: 100
+        ipv4: 10.100.100.1
+        netmask: 255.255.255.255
+```
+
+**Behavior:** Intent file is the single source of truth. Loopbacks not in the intent file are **deleted**.
+
+**Use when:**
+- ✅ Fresh device configuration
+- ✅ Lab/test environments
+- ✅ You want strict enforcement of intent
+- ⚠️ **Only if you're certain the intent file is complete!**
+
+### Mixed Mode
+
+Different devices can have different policies:
+```yaml
+devices:
+  - name: prod-router
+    delete_unmanaged_loopbacks: false  # Safe for production
+    loopbacks: [...]
+  
+  - name: lab-router
+    delete_unmanaged_loopbacks: true   # Strict for lab
+    loopbacks: [...]
+```
 ---
 
 ## 🚧 Planned Work

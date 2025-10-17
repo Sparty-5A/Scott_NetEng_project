@@ -45,6 +45,8 @@ dependencies = [
     "pytest-xdist>=3.0",
     "python-decouple>=3.8",
     "xmltodict>=1.0.2",
+    "pydantic>=2.12.2",
+    "pyyaml>=6.0.3",
 ]
 
 [project.optional-dependencies]
