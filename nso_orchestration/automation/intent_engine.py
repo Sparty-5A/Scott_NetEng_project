@@ -105,9 +105,7 @@ class IntentEngine:
         logger.info(f"Found {len(loopbacks)} loopbacks on {device_name}")
         return loopbacks
 
-    def calculate_loopback_changes(
-        self, device_intent: DeviceIntent
-    ) -> list[Change]:
+    def calculate_loopback_changes(self, device_intent: DeviceIntent) -> list[Change]:
         """
         Calculate changes needed to achieve desired loopback state.
 
@@ -269,9 +267,7 @@ class IntentEngine:
 
         return False
 
-    def apply_intent(
-        self, intent: NetworkIntent, dry_run: bool = False
-    ) -> tuple[int, int]:
+    def apply_intent(self, intent: NetworkIntent, dry_run: bool = False) -> tuple[int, int]:
         """
         Apply network intent - reconcile desired state with actual state.
 

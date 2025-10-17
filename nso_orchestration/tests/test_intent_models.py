@@ -13,13 +13,11 @@ from nso_orchestration.automation.intent_models import (
 def test_valid_loopback():
     """Test valid loopback configuration."""
     lb = LoopbackIntent(
-        id=100,
-        ipv4="10.100.100.1",
-        netmask="255.255.255.255",
-        description="Test loopback"
+        id=100, ipv4="10.100.100.1", netmask="255.255.255.255", description="Test loopback"
     )
     assert lb.id == 100
     assert lb.ipv4 == "10.100.100.1"
+
 
 def test_invalid_loopback_netmask():
     """Test invalid netmask is rejected."""
@@ -31,39 +29,36 @@ def test_invalid_loopback_netmask():
         )
     assert "Invalid subnet mask" in str(exc_info.value)
 
+
 def test_invalid_ipv4_address():
     """Test invalid IPv4 address is rejected."""
     with pytest.raises(ValidationError):
-        LoopbackIntent(
-            id=100,
-            ipv4="300.100.100.1",  # Invalid octet
-            netmask="255.255.255.255"
-        )
+        LoopbackIntent(id=100, ipv4="300.100.100.1", netmask="255.255.255.255")  # Invalid octet
+
 
 def test_duplicate_device_names():
     """Test duplicate device names are rejected."""
     with pytest.raises(ValidationError) as exc_info:
-        NetworkIntent(devices=[
-            DeviceIntent(name="router1", device_type="ios-xe", loopbacks=[]),
-            DeviceIntent(name="router1", device_type="ios-xe", loopbacks=[]),  # Duplicate
-        ])
+        NetworkIntent(
+            devices=[
+                DeviceIntent(name="router1", device_type="ios-xe", loopbacks=[]),
+                DeviceIntent(name="router1", device_type="ios-xe", loopbacks=[]),  # Duplicate
+            ]
+        )
     assert "Duplicate device names" in str(exc_info.value)
+
 
 def test_valid_network_intent():
     """Test valid complete network intent."""
-    intent = NetworkIntent(devices=[
-        DeviceIntent(
-            name="dist-rtr01",
-            device_type="ios-xe",
-            loopbacks=[
-                LoopbackIntent(
-                    id=100,
-                    ipv4="10.100.100.1",
-                    netmask="255.255.255.255"
-                )
-            ]
-        )
-    ])
+    intent = NetworkIntent(
+        devices=[
+            DeviceIntent(
+                name="dist-rtr01",
+                device_type="ios-xe",
+                loopbacks=[LoopbackIntent(id=100, ipv4="10.100.100.1", netmask="255.255.255.255")],
+            )
+        ]
+    )
 
     assert len(intent.devices) == 1
     assert intent.devices[0].name == "dist-rtr01"
@@ -75,9 +70,7 @@ def test_safe_deletion_default():
     device = DeviceIntent(
         name="test-rtr",
         device_type="ios-xe",
-        loopbacks=[
-            LoopbackIntent(id=100, ipv4="10.100.100.1", netmask="255.255.255.255")
-        ]
+        loopbacks=[LoopbackIntent(id=100, ipv4="10.100.100.1", netmask="255.255.255.255")],
     )
 
     # Default should be False (safe mode)
@@ -90,7 +83,7 @@ def test_strict_deletion_explicit():
         name="test-rtr",
         device_type="ios-xe",
         delete_unmanaged_loopbacks=True,  # Explicitly enable
-        loopbacks=[]
+        loopbacks=[],
     )
 
     assert device.delete_unmanaged_loopbacks is True
@@ -98,20 +91,22 @@ def test_strict_deletion_explicit():
 
 def test_mixed_deletion_policies():
     """Test different devices can have different deletion policies."""
-    intent = NetworkIntent(devices=[
-        DeviceIntent(
-            name="safe-rtr",
-            device_type="ios-xe",
-            delete_unmanaged_loopbacks=False,
-            loopbacks=[]
-        ),
-        DeviceIntent(
-            name="strict-rtr",
-            device_type="ios-xe",
-            delete_unmanaged_loopbacks=True,
-            loopbacks=[]
-        )
-    ])
+    intent = NetworkIntent(
+        devices=[
+            DeviceIntent(
+                name="safe-rtr",
+                device_type="ios-xe",
+                delete_unmanaged_loopbacks=False,
+                loopbacks=[],
+            ),
+            DeviceIntent(
+                name="strict-rtr",
+                device_type="ios-xe",
+                delete_unmanaged_loopbacks=True,
+                loopbacks=[],
+            ),
+        ]
+    )
 
     assert intent.devices[0].delete_unmanaged_loopbacks is False
     assert intent.devices[1].delete_unmanaged_loopbacks is True

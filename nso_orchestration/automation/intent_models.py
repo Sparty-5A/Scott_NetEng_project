@@ -14,7 +14,9 @@ class LoopbackIntent(BaseModel):
     """Intent model for a loopback interface."""
 
     id: int = Field(..., ge=0, le=2147483647, description="Loopback interface number")
-    ipv4: str = Field(..., pattern=r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$", description="IPv4 address")
+    ipv4: str = Field(
+        ..., pattern=r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$", description="IPv4 address"
+    )
     netmask: str = Field(..., description="Subnet mask")
     description: str | None = Field(None, max_length=240, description="Interface description")
 
@@ -23,17 +25,39 @@ class LoopbackIntent(BaseModel):
     def validate_netmask(cls, v: str) -> str:
         """Validate subnet mask format."""
         valid_masks = {
-            "255.255.255.255", "255.255.255.254", "255.255.255.252",
-            "255.255.255.248", "255.255.255.240", "255.255.255.224",
-            "255.255.255.192", "255.255.255.128", "255.255.255.0",
-            "255.255.254.0", "255.255.252.0", "255.255.248.0",
-            "255.255.240.0", "255.255.224.0", "255.255.192.0",
-            "255.255.128.0", "255.255.0.0", "255.254.0.0",
-            "255.252.0.0", "255.248.0.0", "255.240.0.0",
-            "255.224.0.0", "255.192.0.0", "255.128.0.0",
-            "255.0.0.0", "254.0.0.0", "252.0.0.0",
-            "248.0.0.0", "240.0.0.0", "224.0.0.0",
-            "192.0.0.0", "128.0.0.0", "0.0.0.0"
+            "255.255.255.255",
+            "255.255.255.254",
+            "255.255.255.252",
+            "255.255.255.248",
+            "255.255.255.240",
+            "255.255.255.224",
+            "255.255.255.192",
+            "255.255.255.128",
+            "255.255.255.0",
+            "255.255.254.0",
+            "255.255.252.0",
+            "255.255.248.0",
+            "255.255.240.0",
+            "255.255.224.0",
+            "255.255.192.0",
+            "255.255.128.0",
+            "255.255.0.0",
+            "255.254.0.0",
+            "255.252.0.0",
+            "255.248.0.0",
+            "255.240.0.0",
+            "255.224.0.0",
+            "255.192.0.0",
+            "255.128.0.0",
+            "255.0.0.0",
+            "254.0.0.0",
+            "252.0.0.0",
+            "248.0.0.0",
+            "240.0.0.0",
+            "224.0.0.0",
+            "192.0.0.0",
+            "128.0.0.0",
+            "0.0.0.0",
         }
         if v not in valid_masks:
             raise ValueError(f"Invalid subnet mask: {v}. Must be a valid dotted-decimal mask.")
@@ -46,7 +70,7 @@ class LoopbackIntent(BaseModel):
         if v is None:
             return v
 
-        invalid_chars = ['<', '>', '&', '"', "'"]
+        invalid_chars = ["<", ">", "&", '"', "'"]
         if any(char in v for char in invalid_chars):
             raise ValueError(f"Description contains invalid characters: {invalid_chars}")
 
@@ -95,7 +119,9 @@ class DeviceIntent(BaseModel):
     """Intent model for a network device."""
 
     name: str = Field(..., min_length=1, max_length=63, description="Device hostname")
-    device_type: Literal["ios", "ios-xe", "ios-xr", "nxos"] = Field(..., description="Device OS type")
+    device_type: Literal["ios", "ios-xe", "ios-xr", "nxos"] = Field(
+        ..., description="Device OS type"
+    )
     loopbacks: list[LoopbackIntent] = Field(default_factory=list)
     bgp: BGPIntent | None = None
 
@@ -106,7 +132,7 @@ class DeviceIntent(BaseModel):
             "If True, delete loopbacks not in intent. "
             "If False (default), only manage declared loopbacks and ignore others. "
             "Safe default prevents accidental deletion of existing configs."
-        )
+        ),
     )
 
     @field_validator("name")
@@ -114,7 +140,9 @@ class DeviceIntent(BaseModel):
     def validate_hostname(cls, v: str) -> str:
         """Validate hostname format."""
         if not v.replace("-", "").replace("_", "").isalnum():
-            raise ValueError(f"Invalid hostname: {v}. Only alphanumeric, hyphens, underscores allowed.")
+            raise ValueError(
+                f"Invalid hostname: {v}. Only alphanumeric, hyphens, underscores allowed."
+            )
         return v
 
 
@@ -156,26 +184,22 @@ if __name__ == "__main__":
                         "id": 100,
                         "ipv4": "10.100.100.1",
                         "netmask": "255.255.255.255",
-                        "description": "Management loopback"
+                        "description": "Management loopback",
                     },
                     {
                         "id": 200,
                         "ipv4": "10.200.200.1",
                         "netmask": "255.255.255.255",
-                        "description": "BGP peering"
-                    }
+                        "description": "BGP peering",
+                    },
                 ],
                 "bgp": {
                     "asn": 65001,
                     "router_id": "10.100.100.1",
                     "neighbors": [
-                        {
-                            "ip": "10.0.0.2",
-                            "remote_asn": 65002,
-                            "description": "Core router"
-                        }
-                    ]
-                }
+                        {"ip": "10.0.0.2", "remote_asn": 65002, "description": "Core router"}
+                    ],
+                },
             }
         ]
     }

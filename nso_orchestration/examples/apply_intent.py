@@ -61,24 +61,16 @@ Examples:
 
   # Use custom intent file
   python apply_intent.py --intent custom_intent.yaml
-        """
+        """,
     )
     parser.add_argument(
         "--intent",
         type=Path,
         default=Path("intent/network_intent.yaml"),
-        help="Path to intent file (default: intent/network_intent.yaml)"
+        help="Path to intent file (default: intent/network_intent.yaml)",
     )
-    parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Show changes without applying them"
-    )
-    parser.add_argument(
-        "--json",
-        action="store_true",
-        help="Output results in JSON format"
-    )
+    parser.add_argument("--dry-run", action="store_true", help="Show changes without applying them")
+    parser.add_argument("--json", action="store_true", help="Output results in JSON format")
 
     args = parser.parse_args()
 
@@ -119,11 +111,8 @@ Examples:
                     "dry_run": args.dry_run,
                     "intent_file": str(intent_file),
                     "devices": len(intent.devices),
-                    "changes": {
-                        "successful": success,
-                        "failed": failed
-                    },
-                    "status": "success" if failed == 0 else "partial_failure"
+                    "changes": {"successful": success, "failed": failed},
+                    "status": "success" if failed == 0 else "partial_failure",
                 }
                 print(json.dumps(result, indent=2))
 
